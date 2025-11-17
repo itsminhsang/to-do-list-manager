@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý danh mục{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-management {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .add-category-form {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .form-inline {
+        display: flex;
+        gap: 15px;
+        align-items: flex-end;
+    }
+    
+    .form-group {
+        flex: 1;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 13px;
+        font-family: 'Times New Roman', Times, serif;
+        transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .form-group input[type="color"] {
+        height: 45px;
+        cursor: pointer;
+    }
+    
+    .btn-add {
+        padding: 10px 25px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: 'Times New Roman', Times, serif;
+        transition: all 0.3s;
+    }
+    
+    .btn-add:hover {
+        background: #764ba2;
+    }
+    
+    .categories-list {
+        display: grid;
+        gap: 15px;
+    }
+    
+    .category-item {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .category-item:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .category-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .color-box {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .category-details h3 {
+        font-size: 18px;
+        color: #333;
+        margin: 0 0 5px 0;
+    }
+    
+    .category-details p {
+        color: #999;
+        font-size: 12px;
+        margin: 0;
+    }
+    
+    .category-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-delete {
+        padding: 8px 20px;
+        background: #e74c3c;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 12px;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .btn-delete:hover {
+        background: #c0392b;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+    
+    .empty-state h2 {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="category-management">
+    <div class="add-category-form">
+        <h2 style="margin-bottom: 20px; color: #667eea;">➕ Thêm danh mục mới</h2>
+        <form method="POST" action="{{ url_for('add_category') }}" class="form-inline">
+            <div class="form-group">
+                <label for="name">Tên danh mục</label>
+                <input type="text" id="name" name="name" required placeholder="Nhập tên danh mục...">
+            </div>
+            
+            <div class="form-group" style="flex: 0 0 150px;">
+                <label for="color">Màu sắc</label>
+                <input type="color" id="color" name="color" value="#3498db">
+            </div>
+            
+            <button type="submit" class="btn-add">Thêm</button>
+        </form>
+    </div>
+    
+    <h2 style="margin-bottom: 20px; color: #667eea;">📁 Danh sách danh mục</h2>
+    
+    <div class="categories-list">
+        {% if categories %}
+            {% for category in categories %}
+            <div class="category-item">
+                <div class="category-info">
+                    <div class="color-box" style="background-color: {{ category.color }}"></div>
+                    <div class="category-details">
+                        <h3>{{ category.name }}</h3>
+                        <p>{{ category.todos|length }} công việc</p>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="{{ url_for('delete_category', id=category.id) }}" 
+                       class="btn-delete"
+                       onclick="return confirm('Xóa danh mục này sẽ xóa tất cả công việc trong danh mục. Bạn có chắc?')">
+                       🗑️ Xóa
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <h2>📂</h2>
+                <p>Chưa có danh mục nào. Hãy thêm danh mục đầu tiên!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

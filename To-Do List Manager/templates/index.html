@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .add-form {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 13px;
+        font-family: 'Times New Roman', Times, serif;
+        transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .form-row .form-group {
+        flex: 1;
+    }
+    
+    .filter-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        padding: 8px 20px;
+        border: 2px solid #667eea;
+        background: white;
+        color: #667eea;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        font-size: 13px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: #667eea;
+        color: white;
+    }
+    
+    .todo-list {
+        display: grid;
+        gap: 15px;
+    }
+    
+    .todo-item {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .todo-item:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .todo-item.completed {
+        opacity: 0.6;
+        background: #f8f9fa;
+    }
+    
+    .todo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+    
+    .todo-title {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .todo-title input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .todo-title h3 {
+        font-size: 18px;
+        color: #333;
+        margin: 0;
+    }
+    
+    .todo-item.completed h3 {
+        text-decoration: line-through;
+        color: #999;
+    }
+    
+    .todo-badges {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+    
+    .badge-high {
+        background: #fee;
+        color: #c00;
+    }
+    
+    .badge-medium {
+        background: #fef3cd;
+        color: #856404;
+    }
+    
+    .badge-low {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .category-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .todo-description {
+        margin: 10px 0;
+        color: #666;
+        line-height: 1.6;
+    }
+    
+    .todo-meta {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        font-size: 12px;
+        color: #999;
+    }
+    
+    .todo-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 15px;
+    }
+    
+    .btn-small {
+        padding: 6px 15px;
+        font-size: 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .btn-edit {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-edit:hover {
+        background: #2980b9;
+    }
+    
+    .btn-delete {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-delete:hover {
+        background: #c0392b;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+    
+    .empty-state h2 {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state p {
+        font-size: 16px;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: width 0.3s;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stats-bar">
+    <div class="stat-item">
+        <h3>{{ stats.total }}</h3>
+        <p>Tổng công việc</p>
+    </div>
+    <div class="stat-item">
+        <h3>{{ stats.active }}</h3>
+        <p>Đang thực hiện</p>
+    </div>
+    <div class="stat-item">
+        <h3>{{ stats.completed }}</h3>
+        <p>Đã hoàn thành</p>
+    </div>
+    <div class="stat-item">
+        <h3>{{ ((stats.completed / stats.total * 100) if stats.total > 0 else 0)|round(1) }}%</h3>
+        <p>Tiến độ</p>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ ((stats.completed / stats.total * 100) if stats.total > 0 else 0) }}%"></div>
+        </div>
+    </div>
+</div>
+
+<div class="add-form">
+    <h2 style="margin-bottom: 20px; color: #667eea;">➕ Thêm công việc mới</h2>
+    <form method="POST" action="{{ url_for('add_todo') }}">
+        <div class="form-group">
+            <label for="title">Tiêu đề *</label>
+            <input type="text" id="title" name="title" required placeholder="Nhập tiêu đề công việc...">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Mô tả chi tiết</label>
+            <textarea id="description" name="description" rows="3" placeholder="Mô tả chi tiết về công việc..."></textarea>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="priority">Độ ưu tiên</label>
+                <select id="priority" name="priority">
+                    <option value="low">🟢 Thấp</option>
+                    <option value="medium" selected>🟡 Trung bình</option>
+                    <option value="high">🔴 Cao</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="category_id">Danh mục</label>
+                <select id="category_id" name="category_id">
+                    <option value="">Không có</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="due_date">Hạn hoàn thành</label>
+                <input type="date" id="due_date" name="due_date">
+            </div>
+        </div>
+        
+        <button type="submit" class="btn">Thêm công việc</button>
+    </form>
+</div>
+
+<div class="filter-bar">
+    <a href="{{ url_for('index', filter='all') }}" class="filter-btn {{ 'active' if filter_by == 'all' else '' }}">
+        📋 Tất cả ({{ stats.total }})
+    </a>
+    <a href="{{ url_for('index', filter='active') }}" class="filter-btn {{ 'active' if filter_by == 'active' else '' }}">
+        ⏳ Đang thực hiện ({{ stats.active }})
+    </a>
+    <a href="{{ url_for('index', filter='completed') }}" class="filter-btn {{ 'active' if filter_by == 'completed' else '' }}">
+        ✅ Đã hoàn thành ({{ stats.completed }})
+    </a>
+    
+    {% for cat in categories %}
+    <a href="{{ url_for('index', category=cat.id) }}" class="filter-btn {{ 'active' if selected_category == cat.id|string else '' }}">
+        📁 {{ cat.name }}
+    </a>
+    {% endfor %}
+</div>
+
+<div class="todo-list">
+    {% if todos %}
+        {% for todo in todos %}
+        <div class="todo-item {{ 'completed' if todo.completed else '' }}">
+            <div class="todo-header">
+                <div class="todo-title">
+                    <form action="{{ url_for('toggle_todo', id=todo.id) }}" method="GET" style="margin: 0;">
+                        <input type="checkbox" {{ 'checked' if todo.completed else '' }} 
+                               onchange="this.form.submit()">
+                    </form>
+                    <h3>{{ todo.title }}</h3>
+                </div>
+                <div class="todo-badges">
+                    {% if todo.priority == 'high' %}
+                    <span class="badge badge-high">🔴 Cao</span>
+                    {% elif todo.priority == 'medium' %}
+                    <span class="badge badge-medium">🟡 TB</span>
+                    {% else %}
+                    <span class="badge badge-low">🟢 Thấp</span>
+                    {% endif %}
+                    
+                    {% if todo.category %}
+                    <span class="category-badge" style="background-color: {{ todo.category.color }}">
+                        {{ todo.category.name }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if todo.description %}
+            <div class="todo-description">{{ todo.description }}</div>
+            {% endif %}
+            
+            <div class="todo-meta">
+                <span>📅 Tạo: {{ todo.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                {% if todo.due_date %}
+                <span>⏰ Hạn: {{ todo.due_date.strftime('%d/%m/%Y') }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="todo-actions">
+                <a href="{{ url_for('edit_todo', id=todo.id) }}" class="btn-small btn-edit">✏️ Sửa</a>
+                <a href="{{ url_for('delete_todo', id=todo.id) }}" 
+                   class="btn-small btn-delete" 
+                   onclick="return confirm('Bạn có chắc muốn xóa công việc này?')">
+                   🗑️ Xóa
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <h2>📭</h2>
+            <p>Không có công việc nào. Hãy thêm công việc mới!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

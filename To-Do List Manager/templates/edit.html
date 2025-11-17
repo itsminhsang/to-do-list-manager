@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Chỉnh sửa công việc{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-form {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 13px;
+        font-family: 'Times New Roman', Times, serif;
+        transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+    
+    .btn-submit {
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: 'Times New Roman', Times, serif;
+        transition: all 0.3s;
+    }
+    
+    .btn-submit:hover {
+        background: #764ba2;
+    }
+    
+    .btn-cancel {
+        padding: 12px 30px;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.3s;
+        display: inline-block;
+        font-size: 13px;
+    }
+    
+    .btn-cancel:hover {
+        background: #5a6268;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-form">
+    <h2 style="margin-bottom: 25px; color: #667eea;">✏️ Chỉnh sửa công việc</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="title">Tiêu đề *</label>
+            <input type="text" id="title" name="title" value="{{ todo.title }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Mô tả chi tiết</label>
+            <textarea id="description" name="description" rows="5">{{ todo.description or '' }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="priority">Độ ưu tiên</label>
+            <select id="priority" name="priority">
+                <option value="low" {{ 'selected' if todo.priority == 'low' else '' }}>🟢 Thấp</option>
+                <option value="medium" {{ 'selected' if todo.priority == 'medium' else '' }}>🟡 Trung bình</option>
+                <option value="high" {{ 'selected' if todo.priority == 'high' else '' }}>🔴 Cao</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="category_id">Danh mục</label>
+            <select id="category_id" name="category_id">
+                <option value="">Không có</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {{ 'selected' if todo.category_id == cat.id else '' }}>
+                    {{ cat.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="due_date">Hạn hoàn thành</label>
+            <input type="date" id="due_date" name="due_date" 
+                   value="{{ todo.due_date.strftime('%Y-%m-%d') if todo.due_date else '' }}">
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">💾 Lưu thay đổi</button>
+            <a href="{{ url_for('index') }}" class="btn-cancel">❌ Hủy</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
