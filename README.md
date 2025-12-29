@@ -2,7 +2,7 @@
 
 Thông tin đồ án
 
-Môn học:*Lập trình Python Nâng cao
+Môn học: Lập trình Python Nâng cao
 
 Sinh viên thực hiện:
 - Lại Trần Minh Sang
