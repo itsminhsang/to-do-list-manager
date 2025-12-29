@@ -12,8 +12,8 @@ Chủ đề: Ứng dụng quản lý công việc (To-Do List) sử dụng Pytho
 
 ---
 
-🎯 Kết quả: 
-Dự án này chi được 8đ do hạn chế về thời gian làm đồ án còn hơi gấp rút, mọi người có thể hoàn thiện hơn chút nữa về giao diện và thêm chức năng thời gian thông báo công việc cần làm khi gần đến deadline từ 1 đến 2 tiếng (có thể phân loại màu về thời gian deadline của công việc)
+🎯 Kết quả:
+Dự án này chỉ được 8đ do hạn chế về thời gian làm đồ án còn hơi gấp rút, mọi người có thể hoàn thiện hơn chút nữa về giao diện và thêm chức năng thời gian thông báo công việc cần làm khi gần đến deadline từ 1 đến 2 tiếng (có thể phân loại màu về thời gian deadline của công việc).
 
 ---
 
